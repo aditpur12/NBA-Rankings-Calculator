@@ -9,6 +9,7 @@ pd.set_option("display.width", None)
 try:
     df = pd.read_csv("Player per Game.csv", low_memory=False)
     awards = pd.read_csv("Player Award Shares.csv", low_memory=False)
+    allStar = pd.read_csv("All-Star Selections.csv", low_memory=False)
     print("Data loaded successfully!")
 except Exception as e:
     print(f"Error loading data: {e}")
@@ -70,6 +71,13 @@ for _, row in awards.iterrows():
     if weight > 0:
         mask = (df['player_id'] == row['player_id']) & (df['season'] == row['season'])
         df.loc[mask, 'player_score'] += weight * row['share']
+
+
+#All Star
+
+for _, row in allStar.iterrows():
+    mask = (df['player_id'] == row['player_id']) & (df['season'] == row['season'])
+    df.loc[mask, 'player_score'] += 0.2
         
 
 # Sort by player score to get rankings
