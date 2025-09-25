@@ -6,6 +6,24 @@ pd.set_option("display.max_columns", None)
 pd.set_option("display.max_rows", 100)
 pd.set_option("display.width", None)
 
+weights = {
+  "points": 0.35,
+    "assists": 0.25,
+    "rebounds": 0.25,
+    "steals": 0.125,
+    "blocks": 0.125,
+    "turnovers": -0.10  
+}
+
+print("\nCustomize your stat weights (press Enter to keep default):")
+for stat, default in weights.items():
+    try:
+        user = input(f"Weight for {stat} (default = {default}): ")
+        weights[stat] = float(user)
+    except ValueError:
+        print(f"Invalid input for {stat}, keeping default {default}")
+
+
 try:
     df = pd.read_csv("Player Totals.csv", low_memory=False)
     awards = pd.read_csv("Player Award Shares.csv", low_memory=False)
@@ -46,12 +64,12 @@ for stat in stats_to_normalize:
 
 
 career_stats['career_score'] = (
-    0.35 * career_stats.get('z_pts', 0) +
-    0.25 * career_stats.get('z_ast', 0) +
-    0.25 * career_stats.get('z_trb', 0) +
-    0.125 * career_stats.get('z_stl', 0) +
-    0.125 * career_stats.get('z_blk', 0) -
-    0.10 * career_stats.get('z_tov', 0) +
+    weights["points"] * career_stats.get('z_pts', 0) +
+    weights["assists"] * career_stats.get('z_ast', 0) +
+    weights["rebounds"]* career_stats.get('z_trb', 0) +
+    weights["steals"] * career_stats.get('z_stl', 0) +
+    weights["blocks"] * career_stats.get('z_blk', 0) -
+    weights["turnovers"] * career_stats.get('z_tov', 0) +
     0.005 * career_stats.get('trp_dbl', 0)
 )
 
